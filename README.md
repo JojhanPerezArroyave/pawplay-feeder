@@ -1,50 +1,124 @@
-# Welcome to your Expo app 👋
+# 🐱 Pawplay Feeder
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Sistema Gamificado de Dispensación de Recompensas Para Estimular la Actividad Felina**
 
-## Get started
+Una aplicación móvil interactiva que forma parte de un sistema completo de alimentación automatizado diseñado para mejorar la estimulación física y mental de los gatos domésticos mediante gamificación.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 📱 Acerca de la Aplicación
 
-2. Start the app
+Esta aplicación móvil es el componente de software del proyecto **Pawplay Feeder**, desarrollado como parte del curso de Automatización y Control de Procesos en la Universidad de Caldas. La app permite a los gatos interactuar con la pantalla táctil para activar el sistema de dispensación de comida, convirtiendo la alimentación en una experiencia gamificada.
 
-   ```bash
-   npx expo start
-   ```
+## ✨ Características
 
-In the output, you'll find options to open the app in a
+- **🎮 Interfaz Gamificada**: Diseño atractivo que motiva la interacción felina
+- **📱 Diseño Responsivo**: Optimizado para pantallas horizontales y verticales
+- **🎯 Interacción Táctil**: Los gatos pueden tocar la pantalla para activar recompensas
+- **📊 Contador de Interacciones**: Registra el número de toques del gato
+- **🎨 Animaciones Fluidas**: Efectos visuales que mantienen el interés del animal
+- **🌙 Modo Nocturno**: Colores oscuros que no molestan en ambientes con poca luz
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠️ Tecnologías Utilizadas
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **React Native**: Framework para desarrollo móvil multiplataforma
+- **Expo**: Plataforma para desarrollo y despliegue rápido
+- **TypeScript**: Tipado estático para mayor robustez del código
+- **React Hooks**: Para manejo de estado y efectos
+- **Animated API**: Para animaciones nativas de alta performance
 
-## Get a fresh project
+## 🎯 Objetivo del Proyecto
 
-When you're ready, run:
+El sistema completo busca abordar problemas comunes en gatos domésticos urbanos como:
+- Sedentarismo y obesidad
+- Falta de estimulación mental
+- Comportamientos destructivos por aburrimiento
+- Estrés por ambientes poco enriquecidos
 
+## 🚀 Instalación y Desarrollo
+
+### Prerrequisitos
+- Node.js (versión 16 o superior)
+- npm o pnpm
+- Expo CLI
+
+### Pasos de instalación
 ```bash
-npm run reset-project
+# Clonar el repositorio
+git clone https://github.com/JojhanPerezArroyave/pawplay-feeder.git
+
+# Navegar al directorio del proyecto
+cd pawplay-feeder
+
+# Instalar dependencias
+pnpm install
+
+# Ejecutar en modo desarrollo
+pnpm start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Ejecutar en dispositivo
+```bash
+# Para Android
+pnpm android
 
-## Learn more
+# Para iOS
+pnpm ios
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## 📐 Estructura del Proyecto
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+pawplay-feeder/
+├── app/                 # Pantallas principales de la aplicación
+├── assets/             # Recursos estáticos (imágenes, íconos)
+├── components/         # Componentes reutilizables
+├── constants/          # Constantes y temas
+├── hooks/             # Custom hooks
+└── scripts/           # Scripts de utilidad
+```
 
-## Join the community
+## 🎨 Diseño de la Interfaz
 
-Join our community of developers creating universal apps.
+La aplicación presenta:
+- **Colores oscuros y modernos** que no estresan a los felinos
+- **Elementos grandes y táctiles** fáciles de activar por las patas
+- **Animaciones sutiles** que atraen la atención sin sobreestimular
+- **Feedback visual inmediato** cuando se detecta una interacción
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🔮 Funcionalidades Futuras
+
+- Integración con hardware IoT (sensores, dispensador automático)
+- Comunicación en tiempo real con el dispositivo físico
+- Estadísticas detalladas de uso y patrones de comportamiento
+- Notificaciones para los dueños
+- Personalización de niveles de dificultad
+
+## 👥 Equipo de Desarrollo
+
+**Santiago Escobar** y **Jojhan Pérez**  
+Estudiantes de Ingeniería - Universidad de Caldas  
+Facultad de Inteligencia Artificial e Ingenierías
+
+**Supervisora:** Diana Rocío Varón Serna  
+Curso: Automatización y Control de Procesos
+
+## 📚 Contexto Académico
+
+Este proyecto forma parte de una investigación sobre:
+- **Internet de las Cosas (IoT)** aplicado al cuidado de mascotas
+- **Gamificación** en el comportamiento animal
+- **Enriquecimiento ambiental** para felinos domésticos
+- **Interacción Animal-Computadora (ACI)**
+
+## 📄 Licencia
+
+Este proyecto es desarrollado con fines académicos como parte del programa de Automatización y Control de Procesos de la Universidad de Caldas.
+
+---
+
+## 🐾 ¿Por qué Pawplay Feeder?
+
+Los gatos domésticos en entornos urbanos enfrentan desafíos únicos. Este sistema innovador combina tecnología moderna con principios de comportamiento animal para crear una solución que no solo alimenta, sino que estimula, entretiene y mejora la calidad de vida de nuestros compañeros felinos.
+
+**¡Convierte la hora de comer en tiempo de juego! 🎮🐱**
