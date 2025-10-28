@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
 import { Alert, SafeAreaView, View } from "react-native";
-import { AppTitle } from "../components/AppTitle";
 import { GameControls } from "../components/GameControls";
 import { GameStage } from "../components/GameStage";
 import Prey from "../components/Prey";
+import { TitleWithCounters } from "../components/TitleWithCounters";
 import { theme } from "../constants/theme";
 import { useGameLogic } from "../hooks/useGameLogic";
 import { useOrientation } from "../hooks/useOrientation";
@@ -22,7 +22,7 @@ export default function HomeScreen() {
 
   const onCatch = useCallback(() => {
     handleCatch();
-    console.log("🐭 ¡Presa cazada!");
+    console.log("🐭 ¡Toque registrado! Total:", gameStats.totalHits + 1);
     
     // Diferentes mensajes según la racha
     let message = "¡El gato cazó la presa! 🐾";
@@ -34,7 +34,7 @@ export default function HomeScreen() {
     
     Alert.alert("¡Presa cazada!", message);
     // TODO: aquí luego llamaremos al microcontrolador (fetch a /feed)
-  }, [handleCatch, gameStats.currentStreak]);
+  }, [handleCatch, gameStats]);
 
   const onMiss = useCallback(() => {
     handleMiss();
@@ -45,7 +45,11 @@ export default function HomeScreen() {
     <>
       {/* Título en la parte superior */}
       <View style={HomeStyles.topSection}>
-        <AppTitle isLandscape={false} />
+        <TitleWithCounters 
+          isLandscape={false} 
+          sessionTime={gameStats.sessionTime}
+          totalHits={gameStats.totalHits}
+        />
       </View>
 
       {/* Área de juego expandida */}
@@ -76,7 +80,11 @@ export default function HomeScreen() {
     <>
       {/* Título en la parte superior */}
       <View style={HomeStyles.topSectionLandscape}>
-        <AppTitle isLandscape={true} />
+        <TitleWithCounters 
+          isLandscape={true} 
+          sessionTime={gameStats.sessionTime}
+          totalHits={gameStats.totalHits}
+        />
       </View>
 
       {/* Área de juego expandida */}

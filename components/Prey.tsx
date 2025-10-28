@@ -4,7 +4,6 @@ import {
     Easing,
     ImageSourcePropType,
     TouchableWithoutFeedback,
-    View,
 } from "react-native";
 import { theme } from "../constants/theme";
 import { useStageCalculations } from "../hooks/useOrientation";
@@ -217,6 +216,7 @@ export default function Prey({
   
   // Handler de toque
   const handlePress = useCallback(() => {
+    console.log("🎯 Toque en presa detectado - isVisible:", isVisible, "isPlaying:", isPlaying);
     if (!isVisible || !isPlaying) return;
     
     // Detener movimiento actual
@@ -232,12 +232,6 @@ export default function Prey({
   }, [isVisible, isPlaying, onCatch, animateCatch]);
   
   // Handler para toques fallidos en el stage
-  const handleMissTouch = useCallback(() => {
-    if (isPlaying) {
-      onMiss();
-    }
-  }, [isPlaying, onMiss]);
-  
   // Interpolaciones para animaciones
   const rotateZ = rotation.interpolate({
     inputRange: [-1, 1],
@@ -248,18 +242,7 @@ export default function Prey({
   
   return (
     <>
-      {/* Área invisible para detectar toques fallidos */}
-      <TouchableWithoutFeedback onPress={handleMissTouch}>
-        <View style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-        }} />
-      </TouchableWithoutFeedback>
-      
-      {/* La presa */}
+      {/* Solo la presa - sin área de miss para evitar conflictos */}
       <TouchableWithoutFeedback onPress={handlePress}>
         <Animated.View
           style={{
@@ -273,14 +256,20 @@ export default function Prey({
               { rotate: rotateZ },
             ],
             opacity,
-            zIndex: 10,
+            // Área táctil expandida
+            padding: 15, // Padding para hacer el área táctil más grande
+            alignItems: 'center',
+            justifyContent: 'center',
+            // Debug temporal: borde para visualizar el área táctil
+            borderWidth: 1,
+            borderColor: 'rgba(255, 0, 0, 0.3)', // Borde rojo semi-transparente
           }}
         >
           <Animated.Image
             source={source}
             style={{
-              width: '100%',
-              height: '100%',
+              width: size,
+              height: size,
               tintColor: difficulty === 'hard' ? theme.colors.accent.danger : 
                         difficulty === 'easy' ? theme.colors.accent.success : 
                         theme.colors.text.accent,
@@ -288,14 +277,12 @@ export default function Prey({
             resizeMode="contain"
           />
           
-          {/* Efecto de brillo */}
+          {/* Efecto de brillo - centrado con la imagen */}
           <Animated.View
             style={{
               position: 'absolute',
-              top: -2,
-              left: -2,
-              right: -2,
-              bottom: -2,
+              width: size + 4,
+              height: size + 4,
               backgroundColor: theme.colors.text.accent,
               borderRadius: size / 2,
               opacity: 0.2,

@@ -23,15 +23,17 @@ export const HomeStyles = StyleSheet.create({
   // Nuevas secciones para layout reorganizado
   topSection: {
     alignItems: "center",
-    paddingVertical: theme.spacing.xs,
-    maxHeight: 70, // Más estricto para evitar solapamiento
+    paddingVertical: theme.spacing.sm,
+    maxHeight: 120, // Más espacio para contadores + título
+    minHeight: 80,
     flexShrink: 0, // No permitir compresión
   },
 
   topSectionLandscape: {
     alignItems: "center",
-    paddingVertical: 2,
-    maxHeight: 50, // Más estricto en horizontal
+    paddingVertical: theme.spacing.xs,
+    maxHeight: 80, // Más espacio para la fila horizontal
+    minHeight: 60,
     flexShrink: 0, // No permitir compresión
   },
 
@@ -47,10 +49,10 @@ export const HomeStyles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: theme.spacing.sm, // Más espacio
+    paddingVertical: theme.spacing.sm,
     width: "100%",
-    maxHeight: "65%", // Reducido para evitar solapamiento
-    minHeight: 250, // Mínimo garantizado
+    maxHeight: "60%", // Reducido para dar espacio al header
+    minHeight: 250,
   },
 
   expandedGameSectionLandscape: {
@@ -59,8 +61,8 @@ export const HomeStyles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: theme.spacing.xs,
     width: "100%",
-    maxHeight: "70%", // Reducido para evitar solapamiento
-    minHeight: 200, // Mínimo garantizado
+    maxHeight: "65%", // Reducido para dar espacio al header
+    minHeight: 180,
   },
 
   // Nueva sección de controles en la parte inferior
