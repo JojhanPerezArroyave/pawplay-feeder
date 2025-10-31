@@ -1,0 +1,2 @@
+telepot==12.7
+python-telegram-bot==20.7

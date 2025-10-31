@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { GameState, GameStats } from '../types';
+import { getDifficultyConfig, useTelegramBot } from './useTelegramBot';
 
 const initialGameState: GameState = {
   hits: 0,
@@ -23,8 +24,24 @@ export const useGameLogic = () => {
   const sessionStartTime = useRef<number>(Date.now());
   const missedAttempts = useRef<number>(0);
 
+  // Integración con Telegram Bot
+  const { gameData, registerCatch, registerMiss } = useTelegramBot();
+
+  // Sincronizar configuración del bot con el estado del juego
+  useEffect(() => {
+    if (gameData) {
+      setGameState(prev => ({
+        ...prev,
+        difficulty: gameData.difficulty,
+        isPlaying: gameData.game_active,
+      }));
+    }
+  }, [gameData]);
+
   // Actualizar tiempo de sesión cada segundo
   useEffect(() => {
+    if (!gameState.isPlaying) return;
+
     const interval = setInterval(() => {
       setGameStats(prev => ({
         ...prev,
@@ -33,7 +50,7 @@ export const useGameLogic = () => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [gameState.isPlaying]);
 
   const calculateScore = useCallback((hits: number, level: number) => {
     return hits * 10 * level;
@@ -49,6 +66,9 @@ export const useGameLogic = () => {
   }, []);
 
   const handleCatch = useCallback(() => {
+    // Solo procesar si el juego está activo
+    if (!gameState.isPlaying) return;
+
     setGameState(prev => {
       const newHits = prev.hits + 1;
       const newLevel = calculateLevel(newHits);
@@ -76,16 +96,25 @@ export const useGameLogic = () => {
         accuracy: newAccuracy,
       };
     });
-  }, [calculateLevel, calculateScore, calculateAccuracy]);
+
+    // Registrar acierto en el bot de Telegram
+    registerCatch();
+  }, [gameState.isPlaying, calculateLevel, calculateScore, calculateAccuracy, registerCatch]);
 
   const handleMiss = useCallback(() => {
+    // Solo procesar si el juego está activo
+    if (!gameState.isPlaying) return;
+
     missedAttempts.current += 1;
     setGameStats(prev => ({
       ...prev,
       currentStreak: 0,
       accuracy: calculateAccuracy(prev.totalHits, missedAttempts.current),
     }));
-  }, [calculateAccuracy]);
+
+    // Registrar fallo en el bot de Telegram
+    registerMiss();
+  }, [gameState.isPlaying, calculateAccuracy, registerMiss]);
 
   const resetGame = useCallback(() => {
     setGameState(initialGameState);
@@ -98,6 +127,9 @@ export const useGameLogic = () => {
     setGameState(prev => ({ ...prev, difficulty }));
   }, []);
 
+  // Obtener configuración de dificultad para el comportamiento del juego
+  const difficultyConfig = getDifficultyConfig(gameState.difficulty);
+
   return {
     gameState,
     gameStats,
@@ -105,5 +137,11 @@ export const useGameLogic = () => {
     handleMiss,
     resetGame,
     setDifficulty,
+    difficultyConfig, // Exportar configuración para que otros componentes la usen
+    telegramBot: {
+      isConnected: !!gameData,
+      currentPlayer: gameData?.current_player,
+      telegramStats: gameData?.session_stats,
+    },
   };
 };

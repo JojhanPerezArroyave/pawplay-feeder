@@ -11,7 +11,8 @@ import { PreyUtils } from "../utils/PreyUtils";
 export function usePreyLogic(
   difficulty: GameState['difficulty'],
   isPlaying: boolean,
-  onCatch: () => void
+  onCatch: () => void,
+  onExplosion?: (x: number, y: number, color: string) => void
 ) {
   const { width, height } = useStageCalculations();
   
@@ -29,8 +30,11 @@ export function usePreyLogic(
   
   // Estados
   const [isVisible, setIsVisible] = useState(true);
+  const currentPositionRef = useRef({ x: 0, y: 0 });
+  const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
   const animationRef = useRef<Animated.CompositeAnimation | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastUpdateRef = useRef({ x: 0, y: 0 });
   
   // Límites del movimiento
   const { maxX, maxY } = PreyUtils.getMovementLimits(width, height, size);
@@ -40,6 +44,29 @@ export function usePreyLogic(
     PreyUtils.getRandomPosition({ width, height, size }), 
     [width, height, size]
   );
+  
+  // Función para obtener color de dificultad
+  const getDifficultyColor = useCallback(() => {
+    switch (difficulty) {
+      case 'hard': return theme.colors.accent.danger;
+      case 'easy': return theme.colors.accent.success;
+      default: return theme.colors.accent.primary;
+    }
+  }, [difficulty]);
+  
+  // Listener optimizado para la posición (usando useCallback para estabilidad)
+  const positionListener = useCallback(({ x, y }: { x: number; y: number }) => {
+    currentPositionRef.current = { x, y };
+    // Solo actualizar el estado ocasionalmente para la estela, no en cada frame
+    const threshold = 15; // Umbral de distancia para actualizar
+    const dx = Math.abs(x - lastUpdateRef.current.x);
+    const dy = Math.abs(y - lastUpdateRef.current.y);
+    
+    if (dx > threshold || dy > threshold) {
+      lastUpdateRef.current = { x, y };
+      setCurrentPosition({ x, y });
+    }
+  }, []); // Sin dependencias para evitar recreación
   
   // Función principal de movimiento
   const hop = useCallback(() => {
@@ -63,18 +90,22 @@ export function usePreyLogic(
     });
   }, [isPlaying, position, getRandomPosition, maxX, maxY, speed, pauseTime]);
   
-  // Inicialización
+  // Inicialización básica
   useEffect(() => {
     const initialPos = getRandomPosition();
     position.setValue(initialPos);
+    setCurrentPosition(initialPos);
+    currentPositionRef.current = initialPos;
+    lastUpdateRef.current = initialPos;
+    
+    // Listener optimizado para actualizar la posición para la estela
+    const listenerId = position.addListener(positionListener);
     
     // Iniciar rotación
     PreyAnimations.createRotationAnimation(rotation).start();
     
-    const initialDelay = PreyUtils.random(100, 500);
-    timeoutRef.current = setTimeout(hop, initialDelay);
-    
     return () => {
+      position.removeListener(listenerId);
       if (animationRef.current) {
         animationRef.current.stop();
       }
@@ -82,7 +113,21 @@ export function usePreyLogic(
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [hop, position, getRandomPosition, rotation]);
+  }, [getRandomPosition, positionListener, rotation, position]);
+  
+  // Inicialización del movimiento
+  useEffect(() => {
+    if (isPlaying) {
+      const initialDelay = PreyUtils.random(100, 500);
+      timeoutRef.current = setTimeout(hop, initialDelay);
+    }
+    
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [hop, isPlaying]);
   
   // Control de juego
   useEffect(() => {
@@ -119,6 +164,21 @@ export function usePreyLogic(
     console.log("🎯 Toque en presa detectado - isVisible:", isVisible, "isPlaying:", isPlaying);
     if (!isVisible || !isPlaying) return;
     
+    // Usar la posición del ref que se actualiza continuamente
+    const explosionPosition = {
+      x: currentPositionRef.current.x + size / 2, // Centro de la presa
+      y: currentPositionRef.current.y + size / 2,
+    };
+    
+    // Crear explosión si el callback está disponible
+    if (onExplosion) {
+      onExplosion(
+        explosionPosition.x,
+        explosionPosition.y,
+        getDifficultyColor()
+      );
+    }
+    
     // Detener movimiento actual
     if (animationRef.current) {
       animationRef.current.stop();
@@ -129,12 +189,14 @@ export function usePreyLogic(
     
     onCatch();
     animateCatch();
-  }, [isVisible, isPlaying, onCatch, animateCatch]);
+  }, [isVisible, isPlaying, onCatch, animateCatch, onExplosion, size, getDifficultyColor]);
   
   return {
     // Estados
     isVisible,
     size,
+    currentPosition,
+    difficultyColor: getDifficultyColor(),
     
     // Valores animados
     position,

@@ -9,13 +9,15 @@ interface Props {
   onDifficultyChange: (difficulty: GameState['difficulty']) => void;
   onReset: () => void;
   isLandscape: boolean;
+  telegramConnected?: boolean;
 }
 
 export const GameControls: React.FC<Props> = ({ 
   gameState, 
   onDifficultyChange, 
   onReset, 
-  isLandscape 
+  isLandscape,
+  telegramConnected = false
 }) => {
   const difficulties: GameState['difficulty'][] = ['easy', 'medium', 'hard'];
   
@@ -36,6 +38,45 @@ export const GameControls: React.FC<Props> = ({
       default: return 'Medio';
     }
   };
+
+  // Si está conectado a Telegram, mostrar solo información (sin controles)
+  if (telegramConnected) {
+    return (
+      <View style={{ alignItems: 'center', width: '100%' }}>
+        <Text style={{
+          color: theme.colors.text.secondary,
+          fontSize: theme.typography.sizes.sm,
+          marginBottom: theme.spacing.sm,
+          fontWeight: theme.typography.weights.medium,
+        }}>
+          🤖 Controlado por Telegram Bot
+        </Text>
+        <View style={{
+          backgroundColor: getDifficultyColor(gameState.difficulty),
+          paddingHorizontal: theme.spacing.md,
+          paddingVertical: theme.spacing.sm,
+          borderRadius: theme.radius.md,
+        }}>
+          <Text style={{
+            color: theme.colors.text.primary,
+            fontSize: theme.typography.sizes.base,
+            fontWeight: theme.typography.weights.medium,
+            textAlign: 'center',
+          }}>
+            {getDifficultyLabel(gameState.difficulty)}
+          </Text>
+        </View>
+        <Text style={{
+          color: theme.colors.text.tertiary,
+          fontSize: theme.typography.sizes.xs,
+          marginTop: theme.spacing.xs,
+          textAlign: 'center',
+        }}>
+          Usa el bot para cambiar configuración
+        </Text>
+      </View>
+    );
+  }
 
   if (isLandscape) {
     return (

@@ -1,0 +1,10 @@
+{
+  "difficulty": "easy",
+  "game_active": true,
+  "current_player": "Jojhan",
+  "session_stats": {
+    "catches": 0,
+    "misses": 0,
+    "start_time": "2025-10-31T16:00:13.543513"
+  }
+}

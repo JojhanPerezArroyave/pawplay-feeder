@@ -3,6 +3,7 @@ import { Alert, SafeAreaView, View } from "react-native";
 import { GameControls } from "../components/GameControls";
 import { GameStage } from "../components/GameStage";
 import Prey from "../components/Prey";
+import { TelegramStatus } from "../components/TelegramStatus";
 import { TitleWithCounters } from "../components/TitleWithCounters";
 import { theme } from "../constants/theme";
 import { useGameLogic } from "../hooks/useGameLogic";
@@ -17,7 +18,8 @@ export default function HomeScreen() {
     handleCatch, 
     handleMiss, 
     resetGame, 
-    setDifficulty 
+    setDifficulty,
+    telegramBot 
   } = useGameLogic();
 
   const onCatch = useCallback(() => {
@@ -32,9 +34,13 @@ export default function HomeScreen() {
       message = "¡Excelente racha de " + gameStats.currentStreak + "! ✨🐾";
     }
     
-    Alert.alert("¡Presa cazada!", message);
+    // Solo mostrar alertas si no está conectado a Telegram (modo desarrollo)
+    if (!telegramBot.isConnected) {
+      Alert.alert("¡Presa cazada!", message);
+    }
+    
     // TODO: aquí luego llamaremos al microcontrolador (fetch a /feed)
-  }, [handleCatch, gameStats]);
+  }, [handleCatch, gameStats, telegramBot.isConnected]);
 
   const onMiss = useCallback(() => {
     handleMiss();
@@ -43,6 +49,9 @@ export default function HomeScreen() {
 
   const renderPortraitLayout = () => (
     <>
+      {/* Estado de Telegram */}
+      <TelegramStatus position="top" />
+
       {/* Título en la parte superior */}
       <View style={HomeStyles.topSection}>
         <TitleWithCounters 
@@ -71,6 +80,7 @@ export default function HomeScreen() {
           onDifficultyChange={setDifficulty}
           onReset={resetGame}
           isLandscape={false}
+          telegramConnected={telegramBot.isConnected}
         />
       </View>
     </>
@@ -78,6 +88,9 @@ export default function HomeScreen() {
 
   const renderLandscapeLayout = () => (
     <>
+      {/* Estado de Telegram */}
+      <TelegramStatus position="top" />
+
       {/* Título en la parte superior */}
       <View style={HomeStyles.topSectionLandscape}>
         <TitleWithCounters 
@@ -106,6 +119,7 @@ export default function HomeScreen() {
           onDifficultyChange={setDifficulty}
           onReset={resetGame}
           isLandscape={true}
+          telegramConnected={telegramBot.isConnected}
         />
       </View>
     </>
