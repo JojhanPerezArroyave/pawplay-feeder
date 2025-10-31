@@ -18,11 +18,18 @@ pip install -r requirements.txt
 ```
 
 ### 3. Configurar el bot
-1. Abre `pawplay_bot.py`
-2. Reemplaza `"TU_TOKEN_AQUI"` con tu token real:
-```python
-TELEGRAM_TOKEN = "1234567890:ABCdefGHIjklMNOpqrsTUVwxyz"  # Tu token aquí
+1. Copia el archivo de ejemplo:
+```bash
+cp .env.example .env
 ```
+
+2. Edita el archivo `.env` y reemplaza `tu_token_de_bot_father_aqui` con tu token real:
+```env
+TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+HTTP_PORT=8765
+```
+
+**⚠️ IMPORTANTE: Nunca subas el archivo `.env` a GitHub. El token es información sensible.**
 
 ### 4. Ejecutar el bot
 ```bash

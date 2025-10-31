@@ -9,15 +9,24 @@ Universidad de Caldas - Automatización y Control de Procesos
 """
 
 import json
+import os
 import threading
 import time
 from datetime import datetime
 from pathlib import Path
 
 import telepot
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 # =================== CONFIGURACIÓN ===================
-TELEGRAM_TOKEN = "8422272472:AAHunX1mQP2wDscL8o3Hskz6hbebIchu_eU"  # <-- Reemplaza con tu token de BotFather
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+if not TELEGRAM_TOKEN:
+    raise ValueError("❌ Error: TELEGRAM_BOT_TOKEN no encontrado en .env")
+
+HTTP_PORT = int(os.getenv('HTTP_PORT', 8765))
 GAME_DATA_FILE = "game_data.json"
 STATS_FILE = "game_stats.json"
 
@@ -514,8 +523,8 @@ Controla el juego del gato desde Telegram
                 pass
         
         try:
-            httpd = socketserver.TCPServer(("0.0.0.0", 8765), GameDataHandler)
-            print("🌐 Servidor HTTP iniciado en puerto 8765 (todas las interfaces)")
+            httpd = socketserver.TCPServer(("0.0.0.0", HTTP_PORT), GameDataHandler)
+            print(f"🌐 Servidor HTTP iniciado en puerto {HTTP_PORT} (todas las interfaces)")
             thread = threading.Thread(target=httpd.serve_forever, daemon=True)
             thread.start()
             return httpd
