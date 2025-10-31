@@ -157,22 +157,6 @@ export const GameStage: React.FC<Props> = ({ children, isLandscape, style, onCat
         }} 
       />
       
-      {/* Efecto de ondas internas */}
-      <Animated.View
-        style={{
-          position: 'absolute',
-          top: '10%',
-          left: '10%',
-          right: '10%',
-          bottom: '10%',
-          backgroundColor: 'transparent',
-          borderRadius: theme.radius.lg,
-          borderWidth: 1,
-          borderColor: borderColorInterpolation,
-          opacity: 0.3,
-        }}
-      />
-      
       {/* Efectos de colisión */}
       {effects.map(effect => (
         effect.type === 'collision' ? (
